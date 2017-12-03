@@ -5,6 +5,9 @@ import struct
 from sys import exit
 
 import numpy as np
+from sklearn.svm import LinearSVC
+from sklearn.decomposition import PCA
+
 
 def show_img(img):
     for i in range(28):
@@ -28,8 +31,20 @@ x_tra = create_x("train-images-idx3-ubyte")
 y_tra = create_y("train-labels-idx1-ubyte")
 
 
-show_img(x_tra[0])
-print(y_tra[0])
+print(x_tra.shape)
+pca = PCA(n_components=100)
+x_tra_pca = pca.fit_transform(x_tra)
+print(x_tra_pca.shape)
+x_tes_pca = pca.transform(x_tes)
 
-show_img(x_tes[0])
-print(y_tes[0])
+x_tra_pca = x_tra_pca[:20000]
+y_tra = y_tra[:20000]
+
+
+print(y_tra[1000])
+show_img(x_tra[1000])
+
+clf = LinearSVC(random_state=0)
+clf.fit(x_tra_pca, y_tra)
+print(clf.score(x_tes_pca, y_tes))
+
